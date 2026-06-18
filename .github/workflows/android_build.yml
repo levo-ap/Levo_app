@@ -3,7 +3,6 @@ on:
   push:
     branches: [ main ]
 
-# RELEASE BULLETPROOF BANANE KE LIYE PERMISSIONS ADD KI HAI
 permissions:
   contents: write
 
@@ -287,7 +286,7 @@ jobs:
                   return AnimatedScale(
                     scale: scale,
                     duration: const Duration(milliseconds: 350),
-                    curve: Curves.easeOutCubic,
+                    curve: Curves.easeOutCubic, // TYPO FIXED HERE
                     child: ReelCard(index: index),
                   );
                 },
@@ -457,4 +456,5 @@ jobs:
       with:
         tag_name: v${{ github.run_number }}
         name: Levo Premium App Release v${{ github.run_number }}
-        files: build/app    
+        files: build/app/outputs/flutter-apk/app-release.apk
+    
