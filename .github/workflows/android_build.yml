@@ -286,7 +286,7 @@ jobs:
                   return AnimatedScale(
                     scale: scale,
                     duration: const Duration(milliseconds: 350),
-                    curve: Curves.easeOutCubic, // TYPO FIXED HERE
+                    curve: Curves.easeOutCubic,
                     child: ReelCard(index: index),
                   );
                 },
@@ -457,4 +457,5 @@ jobs:
         tag_name: v${{ github.run_number }}
         name: Levo Premium App Release v${{ github.run_number }}
         files: build/app/outputs/flutter-apk/app-release.apk
-    
+      env:
+        GITH
