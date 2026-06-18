@@ -2,6 +2,11 @@ name: Android Build
 on:
   push:
     branches: [ main ]
+
+# RELEASE BULLETPROOF BANANE KE LIYE PERMISSIONS ADD KI HAI
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,7 +28,6 @@ jobs:
         rm -rf * .git*
         flutter create --org com.levo --project-name levo .
 
-    # Indentation completely locked down to support complex matrix gradients
     - name: Inject Complete Luxury Social Layout
       run: |
         cat << 'EOF' > lib/main.dart
@@ -51,7 +55,6 @@ jobs:
           }
         }
 
-        // --- SPLASH SCREEN (ELISA EDITZ CHROME GLOW SYSTEM) ---
         class LuxurySplashScreen extends StatefulWidget {
           const LuxurySplashScreen({super.key});
           @override
@@ -104,7 +107,6 @@ jobs:
           }
         }
 
-        // --- AUTHENTICATION WORKFLOW WITH COMPREHENSIVE NEON GLOW ---
         class AuthScreen extends StatefulWidget {
           const AuthScreen({super.key});
           @override
@@ -145,7 +147,7 @@ jobs:
                             labelText: 'Username or Email',
                             filled: true,
                             fillColor: const Color(0xFF101010),
-                            focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFF00E5FF), width: 1.5)),
+                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF00E5FF), width: 1.5)),
                             enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
                           ),
                         ),
@@ -156,7 +158,7 @@ jobs:
                             labelText: 'Password',
                             filled: true,
                             fillColor: const Color(0xFF101010),
-                            focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFF9C27B0), width: 1.5)),
+                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF9C27B0), width: 1.5)),
                             enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
                           ),
                         ),
@@ -225,7 +227,6 @@ jobs:
           }
         }
 
-        // --- MAIN APPLICATION INTERFACE SYSTEM ---
         class HomeScreen extends StatefulWidget {
           const HomeScreen({super.key});
           @override
@@ -265,7 +266,6 @@ jobs:
           }
         }
 
-        // --- REELS FEED VIEWPORT WITH ADAPTIVE TRANSITIONS ---
         class VideoFeedPage extends StatefulWidget {
           const VideoFeedPage({super.key});
           @override
@@ -399,11 +399,12 @@ jobs:
                   leading: const CircleAvatar(backgroundColor: Colors.white10, child: Icon(Icons.person)),
                   title: Text('Editor Network ${index + 1}'),
                   subtitle: Text(index % 2 == 0 ? 'Seen 12m ago' : 'Unseen message waiting', style: TextStyle(color: index % 2 == 0 ? Colors.white38 : const Color(0xFF00E5FF))),
-                  trailing: Row(
+                  trailing: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(icon: const Icon(Icons.phone, color: Colors.green, size: 20), onPressed: () {}),
-                      IconButton(icon: const Icon(Icons.videocam, color: Color(0xFF00E5FF), size: 20), onPressed: () {}),
+                      Icon(Icons.phone, color: Colors.green, size: 20),
+                      SizedBox(width: 14),
+                      Icon(Icons.videocam, color: Color(0xFF00E5FF), size: 20),
                     ],
                   ),
                 ),
@@ -448,4 +449,12 @@ jobs:
 
     - name: Build APK
       run: |
-        flutter 
+        flutter pub get
+        flutter build apk --release
+
+    - name: Create Release and Upload APK
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ github.run_number }}
+        name: Levo Premium App Release v${{ github.run_number }}
+        files: build/app    
