@@ -22,8 +22,8 @@ jobs:
         rm -rf * .git*
         flutter create --org com.levo --project-name levo .
 
-    # Yeh step automatic poori multi-screen app ka architecture generate kar dega
-    - name: Generate Complete Levo Social Network App
+    # Perfect Fixed Overwrite with A to Z Social Features and Correct Flutter Code Layout
+    - name: Overwrite Code with Advanced MultiScreen Architecture
       run: |
         cat << 'EOF' > lib/main.dart
         import 'package:flutter/material.dart';
@@ -56,13 +56,13 @@ jobs:
           State<LuxurySplashScreen> createState() => _LuxurySplashScreenState();
         }
 
-        class _LuxurySplashScreenState extends State<LuxurySplashScreen> with SingleTickerProviderStateMixin {
+        class _LuxurySplashScreenState extends State<LuxurySplashScreen> {
           double _opacity = 1.0;
 
           @override
           void initState() {
             super.initState();
-            // Just 1 second fade-out animation as requested!
+            // Exact 1-second delay before fading out
             Timer(const Duration(milliseconds: 1000), () {
               if (mounted) {
                 setState(() {
@@ -91,7 +91,6 @@ jobs:
                     width: 150,
                     height: 150,
                     errorBuilder: (context, error, stackTrace) {
-                      // Fallback if user hasn't uploaded logo.png yet
                       return const Text(
                         'LEVO',
                         style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Color(0xFFD4AF37), letterSpacing: 6),
@@ -104,8 +103,8 @@ jobs:
           }
         }
 
-        // --- AUTHENTICATION SCREEN (LOGIN / SIGNUP) ---
-        class AuthScreen extends useStatefulWidget {
+        // --- AUTHENTICATION SCREEN (FIXED TYPO HERE) ---
+        class AuthScreen extends StatefulWidget {
           const AuthScreen({super.key});
           @override
           State<AuthScreen> createState() => _AuthScreenState();
@@ -144,7 +143,7 @@ jobs:
           }
         }
 
-        // --- NAVIGATION HOME CONTAINER ---
+        // --- NAVIGATION CONTAINER ---
         class HomeScreen extends StatefulWidget {
           const HomeScreen({super.key});
           @override
@@ -162,6 +161,7 @@ jobs:
               bottomNavigationBar: BottomNavigationBar(
                 currentIndex: _currentIndex,
                 selectedItemColor: const Color(0xFFD4AF37),
+                unselectedItemColor: Colors.white60,
                 onTap: (index) => setState(() => _currentIndex = index),
                 items: const [
                   BottomNavigationBarItem(icon: Icon(Icons.movie_filter), label: 'Feed'),
@@ -173,7 +173,7 @@ jobs:
           }
         }
 
-        // --- DYNAMIC VIDEO FEED (WITH LIVE EMOTION, MENTIONS, COMMENTS, MULTICOLOR LOADING) ---
+        // --- VIDEO FEED + STORIES + MULTICOLOR LOADING + TELEGRAM EMOJI POP ---
         class VideoFeedPage extends StatefulWidget {
           const VideoFeedPage({super.key});
           @override
@@ -183,7 +183,7 @@ jobs:
         class _VideoFeedPageState extends State<VideoFeedPage> {
           double _emojiScale = 0.0;
           bool _isLiked = false;
-          final List<Color> _refreshColors = [Colors.red, Colors.gold, Colors.blue, Colors.purple];
+          final List<Color> _refreshColors = [Colors.red, Colors.amber, Colors.blue, Colors.purple, Colors.green];
           int _colorIndex = 0;
 
           Future<void> _handleRefresh() async {
@@ -196,7 +196,7 @@ jobs:
           void _triggerTelegramReaction() {
             setState(() {
               _isLiked = !_isLiked;
-              _emojiScale = 1.3;
+              _emojiScale = 1.4;
             });
             Future.delayed(const Duration(milliseconds: 500), () {
               if (mounted) setState(() => _emojiScale = 0.0);
@@ -206,53 +206,94 @@ jobs:
           @override
           Widget build(BuildContext context) {
             return Scaffold(
-              body: RefreshIndicator(
-                color: _refreshColors[_colorIndex],
-                onRefresh: _handleRefresh,
-                child: Stack(
-                  children: [
-                    GestureDetector(
-                      onDoubleTap: _triggerTelegramReaction,
-                      child: Container(
-                        color: const Color(0xFF161616),
-                        child: const Center(child: Icon(Icons.play_circle_filled, size: 80, color: Colors.white38)),
-                      ),
-                    ),
-                    // Telegram-style Pop-up Emoji
-                    Center(
-                      child: AnimatedScale(
-                        scale: _emojiScale,
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.bounceOut,
-                        child: const Icon(Icons.local_fire_department, size: 160, color: Colors.orangeAccent),
-                      ),
-                    ),
-                    // Post Info & Interaction Layout
-                    Positioned(
-                      bottom: 30, left: 16, right: 16,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('@levo_global_network', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFD4AF37))),
-                              const SizedBox(height: 4),
-                              const Text('Cinematic feed integration streaming online...', style: TextStyle(color: Colors.white70)),
-                            ],
+              body: SafeArea(
+                child: RefreshIndicator(
+                  color: _refreshColors[_colorIndex],
+                  onRefresh: _handleRefresh,
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      // --- STORIES REGION ---
+                      SizedBox(
+                        height: 100,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 6,
+                          itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                CircleAvatar(
+                                  radius: 28,
+                                  backgroundColor: _refreshColors[index % _refreshColors.length],
+                                  child: const CircleAvatar(radius: 25, backgroundColor: Colors.black, child: Icon(Icons.person)),
+                                ),
+                                const SizedBox(height: 4),
+                                Text('Story ${index + 1}', style: const TextStyle(fontSize: 10, color: Colors.white70)),
+                              ],
+                            ),
                           ),
-                          Row(
-                            children: [
-                              IconButton(icon: Icon(_isLiked ? Icons.favorite : Icons.favorite_border, color: Colors.red), onPressed: _triggerTelegramReaction),
-                              IconButton(icon: const Icon(Icons.comment_outlined), onPressed: () => _showCommentsBottomSheet(context)),
-                              IconButton(icon: const Icon(Icons.share_outlined), onPressed: () => _showSharePanel(context)),
-                            ],
+                        ),
+                      ),
+                      
+                      // --- VIDEO POST CONTAINER ---
+                      Stack(
+                        children: [
+                          GestureDetector(
+                            onDoubleTap: _triggerTelegramReaction,
+                            child: Container(
+                              height: MediaQuery.of(context).size.height - 240,
+                              color: const Color(0xFF151515),
+                              child: const Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white38)),
+                            ),
+                          ),
+                          // Bouncy Telegram Action Pop Icon
+                          Positioned.fill(
+                            child: Center(
+                              child: AnimatedScale(
+                                scale: _emojiScale,
+                                duration: const Duration(milliseconds: 250),
+                                curve: Curves.bounceOut,
+                                child: Icon(
+                                  _isLiked ? Icons.local_fire_department : Icons.favorite,
+                                  size: 150,
+                                  color: _isLiked ? Colors.orangeAccent : const Color(0xFFD4AF37),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Bottom Controls Overlay
+                          Positioned(
+                            bottom: 20, left: 16, right: 16,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Profile redirect setup..."))),
+                                      child: const Text('@levo_global_network', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFD4AF37), fontSize: 15)),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    const Text('Premium luxury interface showreel.', style: TextStyle(color: Colors.white70)),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(icon: Icon(_isLiked ? Icons.favorite : Icons.favorite_border, color: Colors.red), onPressed: _triggerTelegramReaction),
+                                    IconButton(icon: const Icon(Icons.comment_outlined, color: Colors.white), onPressed: () => _showCommentsBottomSheet(context)),
+                                    IconButton(icon: const Icon(Icons.share_outlined, color: Colors.white), onPressed: () => _showSharePanel(context)),
+                                  ],
+                                )
+                              ],
+                            ),
                           )
                         ],
                       ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -261,20 +302,25 @@ jobs:
           void _showCommentsBottomSheet(BuildContext context) {
             showModalBottomSheet(
               context: context,
+              isScrollControlled: true,
               builder: (context) => Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 16, right: 16, top: 16),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const Text('Comments', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    Expanded(
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 200,
                       child: ListView(
                         children: const [
-                          ListTile(title: Text('@user_one: Epic edit! 🔥')),
-                          ListTile(title: Text('@editor_pro: Mentioned @levo inside the stream!')),
+                          ListTile(title: Text('@vfx_editor: Absolute fire work inside Levo! 🔥')),
+                          ListTile(title: Text('@branding_king: Mentioned @levo framework inside comments section.')),
                         ],
                       ),
                     ),
-                    const TextField(decoration: InputDecoration(hintText: 'Add comment, mention @username...'))
+                    TextField(decoration: const InputDecoration(hintText: 'Add comment, mention users using @...'), onSubmitted: (val) => Navigator.pop(context)),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
@@ -286,13 +332,18 @@ jobs:
               context: context,
               builder: (context) => Container(
                 padding: const EdgeInsets.all(24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(icon: const Icon(Icons.link), onPressed: () {}),
-                    const Text('Copy Link'),
-                    IconButton(icon: const Icon(Icons.send), onPressed: () {}),
-                    const Text('Share to Insta'),
+                    const Text('Share Video', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton.icon(icon: const Icon(Icons.link), label: const Text('Copy Link'), onPressed: () => Navigator.pop(context)),
+                        ElevatedButton.icon(icon: const Icon(Icons.send), label: const Text('Send to Feed'), onPressed: () => Navigator.pop(context)),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -300,7 +351,7 @@ jobs:
           }
         }
 
-        // --- SEARCH ENGINE PAGE (USER ID, LOCATION, AREA SEARCH) ---
+        // --- FILTER ENGINE SEARCH PAGE (USER, LOCATION, AREA SEARCH) ---
         class SearchPage extends StatelessWidget {
           const SearchPage({super.key});
           @override
@@ -309,16 +360,16 @@ jobs:
               appBar: AppBar(title: const TextField(decoration: InputDecoration(hintText: 'Search Username, Area, Location...', border: InputBorder.none))),
               body: ListView(
                 children: const [
-                  ListTile(leading: Icon(Icons.person), title: Text('Search ID: @levo_creator')),
-                  ListTile(leading: Icon(Icons.location_on), title: Text('Location: Mumbai, Maharashtra')),
-                  ListTile(leading: Icon(Icons.map), title: Text('Area Area: Connaught Place, Delhi')),
+                  ListTile(leading: Icon(Icons.search, color: Color(0xFFD4AF37)), title: Text('Query User ID: @levo_creator_studio')),
+                  ListTile(leading: Icon(Icons.location_on, color: Colors.redAccent), title: Text('Area Location: Mumbai High-End Studios')),
+                  ListTile(leading: Icon(Icons.map, color: Colors.blueAccent), title: Text('Specific Sector Search: Connaught Base Area')),
                 ],
               ),
             );
           }
         }
 
-        // --- ADVANCED ACCOUNT PROFILE & SETTINGS (EDIT NAME, BIO, USERNAME) ---
+        // --- MASTER PROFILE & USERNAME/NAME EDIT SETTINGS ---
         class ProfilePage extends StatefulWidget {
           const ProfilePage({super.key});
           @override
@@ -326,9 +377,9 @@ jobs:
         }
 
         class _ProfilePageState extends State<ProfilePage> {
-          String name = "Levo Executive";
-          String username = "levo_pro";
-          String bio = "Cinematic Branding App Framework.";
+          String name = "Levo Developer Pro";
+          String username = "levo_network";
+          String bio = "Cinematic Branding System Custom App Architecture.";
 
           @override
           Widget build(BuildContext context) {
@@ -341,24 +392,24 @@ jobs:
                     children: [
                       Row(
                         children: [
-                          const CircleAvatar(radius: 40, backgroundColor: Color(0xFFD4AF37), child: Icon(Icons.person, size: 40)),
+                          const CircleAvatar(radius: 40, backgroundColor: Color(0xFFD4AF37), child: Icon(Icons.person, size: 40, color: Colors.black)),
                           const SizedBox(width: 20),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                              Text(name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                               Text('@$username', style: const TextStyle(color: Colors.white60)),
                             ],
                           )
                         ],
                       ),
                       const SizedBox(height: 16),
-                      Text(bio, style: const TextStyle(fontSize: 16)),
+                      Text(bio, style: const TextStyle(fontSize: 15, color: Colors.white70)),
                       const SizedBox(height: 30),
                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.white24),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.white12),
                         onPressed: () => _showEditProfileDialog(context),
-                        child: const Text('Edit Profile Settings'),
+                        child: const Text('Edit Account Profile Settings'),
                       )
                     ],
                   ),
@@ -375,11 +426,11 @@ jobs:
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text('Edit Settings'),
+                title: const Text('Change Details'),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Name')),
+                    TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Display Name')),
                     TextField(controller: userController, decoration: const InputDecoration(labelText: 'Username')),
                     TextField(controller: bioController, decoration: const InputDecoration(labelText: 'Bio')),
                   ],
@@ -394,7 +445,7 @@ jobs:
                       });
                       Navigator.pop(context);
                     },
-                    child: const Text('Save'),
+                    child: const Text('Save Changes'),
                   )
                 ],
               ),
@@ -410,15 +461,4 @@ jobs:
 
     - name: Force App Name to Levo
       run: |
-        sed -i 's/android:label="levo"/android:label="Levo"/g' android/app/src/main/AndroidManifest.xml
-
-    - name: Build APK
-      run: |
-        flutter pub get
-        flutter build apk --release
-        
-    - uses: actions/upload-artifact@v4
-      with:
-        name: levo-release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
-        
+        sed -i 's/android:label="levo"/android:label="Levo"/g' android/app/src/main/An
