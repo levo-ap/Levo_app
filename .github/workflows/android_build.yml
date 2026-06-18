@@ -23,8 +23,8 @@ jobs:
         rm -rf * .git*
         flutter create --org com.levo --project-name levo .
 
-    # Indentation validated and fully optimized against parsing crashes
-    - name: Inject Glow Social Network Layout
+    # Indentation completely locked down to support complex matrix gradients
+    - name: Inject Complete Luxury Social Layout
       run: |
         cat << 'EOF' > lib/main.dart
         import 'package:flutter/material.dart';
@@ -51,7 +51,7 @@ jobs:
           }
         }
 
-        // --- SPLASH SCREEN (ELISA EDITZ CORE GLOW NEON BOX) ---
+        // --- SPLASH SCREEN (ELISA EDITZ CHROME GLOW SYSTEM) ---
         class LuxurySplashScreen extends StatefulWidget {
           const LuxurySplashScreen({super.key});
           @override
@@ -104,7 +104,7 @@ jobs:
           }
         }
 
-        // --- AUTHENTICATION WITH ELISA GLOW & SOCIAL LOGINS ---
+        // --- AUTHENTICATION WORKFLOW WITH COMPREHENSIVE NEON GLOW ---
         class AuthScreen extends StatefulWidget {
           const AuthScreen({super.key});
           @override
@@ -179,7 +179,6 @@ jobs:
                           ),
                         ),
                         const SizedBox(height: 24),
-                        // SOCIAL LOGINS SECTION
                         Row(
                           children: [
                             Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
@@ -226,7 +225,7 @@ jobs:
           }
         }
 
-        // --- MASTER SYSTEM CONTAINER ---
+        // --- MAIN APPLICATION INTERFACE SYSTEM ---
         class HomeScreen extends StatefulWidget {
           const HomeScreen({super.key});
           @override
@@ -266,7 +265,7 @@ jobs:
           }
         }
 
-        // --- UNIQUE BLUR DESIGN VIDEO FEED WITH REELS SCALE SCROLL ---
+        // --- REELS FEED VIEWPORT WITH ADAPTIVE TRANSITIONS ---
         class VideoFeedPage extends StatefulWidget {
           const VideoFeedPage({super.key});
           @override
@@ -288,7 +287,7 @@ jobs:
                   return AnimatedScale(
                     scale: scale,
                     duration: const Duration(milliseconds: 350),
-                    curve: Curves.easeOutQuic,
+                    curve: Curves.easeOutCubic,
                     child: ReelCard(index: index),
                   );
                 },
@@ -416,11 +415,6 @@ jobs:
         class ProfilePage extends StatelessWidget {
           const ProfilePage({super.key});
           @override
-          State<ProfilePage> createState() => _ProfilePageState();
-        }
-
-        class _ProfilePageState extends State<ProfilePage> {
-          @override
           Widget build(BuildContext context) {
             return Scaffold(
               appBar: AppBar(
@@ -446,4 +440,12 @@ jobs:
                   )
                 ],
               ),
-              body: const 
+              body: const Center(child: Text('Profile overview active.', style: TextStyle(color: Colors.white38))),
+            );
+          }
+        }
+        EOF
+
+    - name: Build APK
+      run: |
+        flutter 
