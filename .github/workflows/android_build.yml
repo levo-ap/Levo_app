@@ -39,7 +39,6 @@ jobs:
 
         class LevoApp extends StatelessWidget {
           const LevoApp({super.key});
-
           @override
           Widget build(BuildContext context) {
             return MaterialApp(
@@ -62,7 +61,6 @@ jobs:
 
         class _LuxurySplashScreenState extends State<LuxurySplashScreen> {
           double _opacity = 1.0;
-
           @override
           void initState() {
             super.initState();
@@ -77,7 +75,6 @@ jobs:
               }
             });
           }
-
           @override
           Widget build(BuildContext context) {
             return Scaffold(
@@ -114,7 +111,6 @@ jobs:
 
         class _AuthScreenState extends State<AuthScreen> {
           bool isLogin = true;
-
           @override
           Widget build(BuildContext context) {
             return Scaffold(
@@ -240,7 +236,6 @@ jobs:
             const ChatListPage(),
             const ProfilePage()
           ];
-
           @override
           Widget build(BuildContext context) {
             return Scaffold(
@@ -273,7 +268,6 @@ jobs:
 
         class _VideoFeedPageState extends State<VideoFeedPage> {
           int _activeReelIndex = 0;
-
           @override
           Widget build(BuildContext context) {
             return Scaffold(
@@ -305,7 +299,6 @@ jobs:
         class _ReelCardState extends State<ReelCard> {
           bool _isExpanded = false;
           bool _isLiked = false;
-
           @override
           Widget build(BuildContext context) {
             return Stack(
@@ -458,4 +451,4 @@ jobs:
         name: Levo Premium App Release v${{ github.run_number }}
         files: build/app/outputs/flutter-apk/app-release.apk
       env:
-        GITH
+        GITHUB_TOKE
