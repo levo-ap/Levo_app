@@ -1,76 +1,274 @@
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+name: Android Build
+on:
+  push:
+    branches: [ main ]
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: Colors.black),
-    home: isLoggedIn ? const HomeScreen() : const LoginScreen(),
-  ));
-}
+permissions:
+  contents: write
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.16.0'
 
-class _LoginScreenState extends State<LoginScreen> {
-  bool _hide = true;
-  final TextEditingController _user = TextEditingController();
+    - name: Initialize Clean App Structure
+      run: |
+        flutter --disable-analytics
+        rm -rf * .git*
+        # Seedha current directory (.) me hi create kar rahe hain taaki cd levo ka jhanjhat na rahe
+        flutter create --org com.levo --project-name levo .
+        flutter pub add shared_preferences
 
-  void _login() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', true);
-    // Yahan IP/Device log save karne ka logic add hoga
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-  }
+    - name: Inject Complete Levo Premium Framework
+      run: |
+        cat << 'EOF' > lib/main.dart
+        import 'package:flutter/material.dart';
+        import 'package:flutter/cupertino.dart';
+        import 'dart:async';
+        import 'package:shared_preferences/shared_preferences.dart';
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('LEVO', style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Color(0xFF00E5FF))),
-            Padding(padding: const EdgeInsets.all(20), child: TextField(controller: _user, decoration: const InputDecoration(labelText: 'Username'))),
-            Padding(padding: const EdgeInsets.all(20), child: TextField(obscureText: _hide, decoration: InputDecoration(labelText: 'Password', suffixIcon: IconButton(icon: Icon(_hide ? Icons.visibility_off : Icons.visibility), onPressed: () => setState(() => _hide = !_hide))))),
-            ElevatedButton(onPressed: _login, child: const Text('Login')),
-          ],
-        ),
-      ),
-    );
-  }
-}
+        void main() async {
+          WidgetsFlutterBinding.ensureInitialized();
+          final prefs = await SharedPreferences.getInstance();
+          final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+          runApp(LevoApp(isLoggedIn: isLoggedIn));
+        }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('LEVO'),
-        actions: [IconButton(icon: const Icon(Icons.add_box_outlined), onPressed: () {}), IconButton(icon: const Icon(Icons.near_me), onPressed: () {})],
-      ),
-      body: ListView(
-        children: [
-          const ListTile(leading: Icon(Icons.search), title: Text('Search...')),
-          SizedBox(height: 500, child: PageView.builder(scrollDirection: Axis.vertical, itemCount: 10, itemBuilder: (_, i) => Container(margin: const EdgeInsets.all(10), color: Colors.grey[900], child: Center(child: Text('Reel $i 📱'))))),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.live_tv), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: '')
-        ],
-      ),
-    );
-  }
-}
+        class LevoApp extends StatelessWidget {
+          final bool isLoggedIn;
+          const LevoApp({required this.isLoggedIn, super.key});
+
+          @override
+          Widget build(BuildContext context) {
+            return MaterialApp(
+              title: 'Levo',
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData.dark().copyWith(
+                scaffoldBackgroundColor: const Color(0xFF000000),
+                colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF00E5FF), brightness: Brightness.dark),
+              ),
+              home: isLoggedIn ? const HomeScreen() : const LoginScreen(),
+            );
+          }
+        }
+
+        class LoginScreen extends StatefulWidget {
+          const LoginScreen({super.key});
+          @override
+          State<LoginScreen> createState() => _LoginScreenState();
+        }
+
+        class _LoginScreenState extends State<LoginScreen> {
+          bool _hidePassword = true;
+          final TextEditingController _usernameController = TextEditingController();
+          final TextEditingController _passwordController = TextEditingController();
+
+          void _handleLogin() async {
+            if (_usernameController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setBool('isLoggedIn', true);
+              if (mounted) {
+                Navigator.of(context).pushReplacement(
+                  CupertinoPageRoute(builder: (_) => const HomeScreen()), // iPhone Swipe Animation
+                );
+              }
+            }
+          }
+
+          @override
+          Widget build(BuildContext context) {
+            return Scaffold(
+              body: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF080808),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.3), width: 1.5),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Text('LEVO LOGIN', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF00E5FF), letterSpacing: 2), textAlign: TextAlign.center),
+                        const SizedBox(height: 30),
+                        TextField(
+                          controller: _usernameController,
+                          decoration: const InputDecoration(labelText: 'Username or Phone', filled: true, fillColor: Color(0xFF101010)),
+                        ),
+                        const SizedBox(height: 14),
+                        TextField(
+                          controller: _passwordController,
+                          obscureText: _hidePassword,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            filled: true,
+                            fillColor: const Color(0xFF101010),
+                            suffixIcon: IconButton(
+                              icon: Icon(_hidePassword ? Icons.visibility_off : Icons.visibility, color: const Color(0xFF00E5FF)),
+                              onPressed: () => setState(() => _hidePassword = !_hidePassword),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00E5FF), padding: const EdgeInsets.symmetric(vertical: 14)),
+                          onPressed: _handleLogin,
+                          child: const Text('CONTINUE', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+
+        class HomeScreen extends StatefulWidget {
+          const HomeScreen({super.key});
+          @override
+          State<HomeScreen> createState() => _HomeScreenState();
+        }
+
+        class _HomeScreenState extends State<HomeScreen> {
+          int _currentIndex = 0;
+          final List<Widget> _pages = [
+            const VideoFeedPage(),
+            const SearchPage(),
+            const Center(child: Text('✈️ Create Post / Photo / Live Stream Area')),
+            const ProfilePage()
+          ];
+
+          @override
+          Widget build(BuildContext context) {
+            return Scaffold(
+              body: _pages[_currentIndex],
+              bottomNavigationBar: BottomNavigationBar(
+                currentIndex: _currentIndex,
+                backgroundColor: Colors.black,
+                selectedItemColor: const Color(0xFF00E5FF),
+                unselectedItemColor: Colors.white54,
+                type: BottomNavigationBarType.fixed,
+                onTap: (index) => setState(() => _currentIndex = index),
+                items: const [
+                  BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: ''),
+                  BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
+                  BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: ''),
+                  BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: ''),
+                ],
+              ),
+            );
+          }
+        }
+
+        class VideoFeedPage extends StatelessWidget {
+          const VideoFeedPage({super.key});
+
+          @override
+          Widget build(BuildContext context) {
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                title: const Text('LEVO', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2, color: Color(0xFF00E5FF))),
+                actions: [
+                  IconButton(icon: const Icon(Icons.add_box_outlined), onPressed: () {}),
+                  IconButton(icon: const Icon(Icons.near_me), onPressed: () {}), // DM Arrow Icon
+                ],
+              ),
+              body: PageView.builder(
+                scrollDirection: Axis.vertical, // Normal Instagram Swipe
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0B0B0B),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.2)),
+                    ),
+                    child: Stack(
+                      children: [
+                        const Center(child: Icon(Icons.play_arrow_rounded, size: 60, color: Colors.white12)),
+                        Positioned(
+                          bottom: 20, left: 20,
+                          child: Text('@levo_user_post_$index 🚀 Telegram Emoji Style 💬', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          }
+        }
+
+        class SearchPage extends StatelessWidget {
+          const SearchPage({super.key});
+          @override
+          Widget build(BuildContext context) {
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                title: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(color: const Color(0xFF121212), borderRadius: BorderRadius.circular(8)),
+                  child: const TextField(
+                    decoration: InputDecoration(hintText: 'Search username, area, location ID...', border: InputBorder.none),
+                  ),
+                ),
+              ),
+              body: const Center(child: Text('Search engine & ID location active.')),
+            );
+          }
+        }
+
+        class ProfilePage extends StatelessWidget {
+          const ProfilePage({super.key});
+          @override
+          Widget build(BuildContext context) {
+            return Scaffold(
+              body: Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool('isLoggedIn', false);
+                    if (context.mounted) {
+                      Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (_) => const LoginScreen()));
+                    }
+                  },
+                  child: const Text('Logout Session', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            );
+          }
+        }
+        EOF
+
+    - name: Build APK
+      run: |
+        flutter pub get
+        flutter build apk --release
+
+    - name: Deploy to Releases Page
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ github.run_number }}
+        name: Levo Premium App Release v${{ github.run_number }}
+        files: build/app/outputs/flutter-apk/app-release.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
