@@ -17,12 +17,13 @@ jobs:
       with:
         flutter-version: '3.16.0'
 
-    - name: Create Fresh Flutter Project
+    # Is baar hum project ka naam direct capital L se hi create kar rahe hain taaki sed ki zaroorat na pade
+    - name: Create Clean Flutter Project
       run: |
         rm -rf * .git*
-        flutter create --org com.levo --project-name levo .
+        flutter create --org com.levo --project-name Levo .
 
-    # Perfect Fixed Overwrite with A to Z Social Features and Correct Flutter Code Layout
+    # A to Z Premium Social Features Integration
     - name: Overwrite Code with Advanced MultiScreen Architecture
       run: |
         cat << 'EOF' > lib/main.dart
@@ -447,10 +448,6 @@ jobs:
       run: |
         mkdir -p assets
         sed -i '/flutter:/a \  assets:\n    - assets/logo.png' pubspec.yaml
-
-    - name: Force App Name to Levo
-      run: |
-        sed -i 's/android:label="levo"/android:label="Levo"/g' android/app/src/main/AndroidManifest.xml
 
     - name: Build APK
       run: |
