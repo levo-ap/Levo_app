@@ -62,7 +62,6 @@ jobs:
           @override
           void initState() {
             super.initState();
-            // Exact 1-second delay before fading out
             Timer(const Duration(milliseconds: 1000), () {
               if (mounted) {
                 setState(() {
@@ -103,7 +102,6 @@ jobs:
           }
         }
 
-        // --- AUTHENTICATION SCREEN (FIXED TYPO HERE) ---
         class AuthScreen extends StatefulWidget {
           const AuthScreen({super.key});
           @override
@@ -143,7 +141,6 @@ jobs:
           }
         }
 
-        // --- NAVIGATION CONTAINER ---
         class HomeScreen extends StatefulWidget {
           const HomeScreen({super.key});
           @override
@@ -173,7 +170,6 @@ jobs:
           }
         }
 
-        // --- VIDEO FEED + STORIES + MULTICOLOR LOADING + TELEGRAM EMOJI POP ---
         class VideoFeedPage extends StatefulWidget {
           const VideoFeedPage({super.key});
           @override
@@ -213,7 +209,6 @@ jobs:
                   child: ListView(
                     padding: EdgeInsets.zero,
                     children: [
-                      // --- STORIES REGION ---
                       SizedBox(
                         height: 100,
                         child: ListView.builder(
@@ -235,8 +230,6 @@ jobs:
                           ),
                         ),
                       ),
-                      
-                      // --- VIDEO POST CONTAINER ---
                       Stack(
                         children: [
                           GestureDetector(
@@ -247,7 +240,6 @@ jobs:
                               child: const Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white38)),
                             ),
                           ),
-                          // Bouncy Telegram Action Pop Icon
                           Positioned.fill(
                             child: Center(
                               child: AnimatedScale(
@@ -262,7 +254,6 @@ jobs:
                               ),
                             ),
                           ),
-                          // Bottom Controls Overlay
                           Positioned(
                             bottom: 20, left: 16, right: 16,
                             child: Row(
@@ -351,7 +342,6 @@ jobs:
           }
         }
 
-        // --- FILTER ENGINE SEARCH PAGE (USER, LOCATION, AREA SEARCH) ---
         class SearchPage extends StatelessWidget {
           const SearchPage({super.key});
           @override
@@ -369,7 +359,6 @@ jobs:
           }
         }
 
-        // --- MASTER PROFILE & USERNAME/NAME EDIT SETTINGS ---
         class ProfilePage extends StatefulWidget {
           const ProfilePage({super.key});
           @override
@@ -461,4 +450,15 @@ jobs:
 
     - name: Force App Name to Levo
       run: |
-        sed -i 's/android:label="levo"/android:label="Levo"/g' android/app/src/main/An
+        sed -i 's/android:label="levo"/android:label="Levo"/g' android/app/src/main/AndroidManifest.xml
+
+    - name: Build APK
+      run: |
+        flutter pub get
+        flutter build apk --release
+        
+    - uses: actions/upload-artifact@v4
+      with:
+        name: levo-release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
+        
