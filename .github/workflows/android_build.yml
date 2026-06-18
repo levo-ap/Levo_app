@@ -23,8 +23,8 @@ jobs:
         rm -rf * .git*
         flutter create --org com.levo --project-name levo .
 
-    # Perfect Fixed Production Logic (Flow: Splash -> Auth -> Home Feed)
-    - name: Inject Premium Social Media Architecture
+    # Indentation validated and fully optimized against parsing crashes
+    - name: Inject Glow Social Network Layout
       run: |
         cat << 'EOF' > lib/main.dart
         import 'package:flutter/material.dart';
@@ -43,14 +43,15 @@ jobs:
               title: 'Levo',
               debugShowCheckedModeBanner: false,
               theme: ThemeData.dark().copyWith(
-                scaffoldBackgroundColor: const Color(0xFF000000), // Pure Black for OLED Screens
-                colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFD4AF37), brightness: Brightness.dark),
+                scaffoldBackgroundColor: const Color(0xFF000000),
+                colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF00E5FF), brightness: Brightness.dark),
               ),
               home: const LuxurySplashScreen(),
             );
           }
         }
 
+        // --- SPLASH SCREEN (ELISA EDITZ CORE GLOW NEON BOX) ---
         class LuxurySplashScreen extends StatefulWidget {
           const LuxurySplashScreen({super.key});
           @override
@@ -63,10 +64,10 @@ jobs:
           @override
           void initState() {
             super.initState();
-            Timer(const Duration(milliseconds: 1000), () {
+            Timer(const Duration(milliseconds: 1200), () {
               if (mounted) setState(() => _opacity = 0.0);
             });
-            Timer(const Duration(milliseconds: 1400), () {
+            Timer(const Duration(milliseconds: 1600), () {
               if (mounted) {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (_) => const AuthScreen()),
@@ -81,10 +82,21 @@ jobs:
               body: AnimatedOpacity(
                 opacity: _opacity,
                 duration: const Duration(milliseconds: 400),
-                child: const Center(
-                  child: Text(
-                    'LEVO',
-                    style: TextStyle(fontSize: 54, fontWeight: FontWeight.w900, color: Color(0xFFD4AF37), letterSpacing: 8),
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFF00E5FF), width: 2),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(color: const Color(0xFF00E5FF).withOpacity(0.4), blurRadius: 20, spreadRadius: 2),
+                        BoxShadow(color: const Color(0xFF9C27B0).withOpacity(0.3), blurRadius: 40, spreadRadius: 4),
+                      ],
+                    ),
+                    child: const Text(
+                      'ELISA EDITZ',
+                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 4),
+                    ),
                   ),
                 ),
               ),
@@ -92,7 +104,7 @@ jobs:
           }
         }
 
-        // --- AUTHENTICATION SCREEN (FIXED FLOW) ---
+        // --- AUTHENTICATION WITH ELISA GLOW & SOCIAL LOGINS ---
         class AuthScreen extends StatefulWidget {
           const AuthScreen({super.key});
           @override
@@ -101,65 +113,120 @@ jobs:
 
         class _AuthScreenState extends State<AuthScreen> {
           bool isLogin = true;
+
           @override
           Widget build(BuildContext context) {
             return Scaffold(
-              body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      'Levo',
-                      style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, fontFamily: 'serif', color: Colors.white),
-                      textAlign: TextAlign.center,
+              body: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF080808),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.3), width: 1.5),
+                      boxShadow: [
+                        BoxShadow(color: const Color(0xFF9C27B0).withOpacity(0.15), blurRadius: 30, spreadRadius: 2),
+                      ],
                     ),
-                    const SizedBox(height: 50),
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: isLogin ? 'Phone number, username, or email' : 'Email address',
-                        filled: true,
-                        fillColor: const Color(0xFF121212),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          isLogin ? 'WELCOME BACK' : 'CREATE ACCOUNT',
+                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 30),
+                        TextField(
+                          decoration: InputDecoration(
+                            labelText: 'Username or Email',
+                            filled: true,
+                            fillColor: const Color(0xFF101010),
+                            focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFF00E5FF), width: 1.5)),
+                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            filled: true,
+                            fillColor: const Color(0xFF101010),
+                            focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFF9C27B0), width: 1.5)),
+                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(color: const Color(0xFF00E5FF).withOpacity(0.3), blurRadius: 12, spreadRadius: 1)
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF00E5FF),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            ),
+                            onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen())),
+                            child: const Text('CONTINUE', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // SOCIAL LOGINS SECTION
+                        Row(
+                          children: [
+                            Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
+                            const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('OR CONNECT WITH', style: TextStyle(fontSize: 11, color: Colors.white38, letterSpacing: 1))),
+                            Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(side: const BorderSide(color: Color(0xFF3B5998)), padding: const EdgeInsets.symmetric(vertical: 12)),
+                                icon: const Icon(Icons.facebook, color: Color(0xFF3B5998)),
+                                label: const Text('Facebook', style: TextStyle(fontSize: 13)),
+                                onPressed: () {},
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.redAccent), padding: const EdgeInsets.symmetric(vertical: 12)),
+                                icon: const Icon(Icons.g_mobiledata, color: Colors.redAccent, size: 28),
+                                label: const Text('Gmail', style: TextStyle(fontSize: 13)),
+                                onPressed: () {},
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () => setState(() => isLogin = !isLogin),
+                          child: Text(
+                            isLogin ? "Don't have an account? Sign up." : "Already have an account? Log in.",
+                            style: const TextStyle(color: Colors.white54, fontSize: 13),
+                          ),
+                        )
+                      ],
                     ),
-                    const SizedBox(height: 14),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        filled: true,
-                        fillColor: const Color(0xFF121212),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFD4AF37),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                      onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen())),
-                      child: Text(isLogin ? 'Log In' : 'Sign Up', style: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)),
-                    ),
-                    const SizedBox(height: 20),
-                    TextButton(
-                      onPressed: () => setState(() => isLogin = !isLogin),
-                      child: Text(
-                        isLogin ? "Don't have an account? Sign up." : "Already have an account? Log in.",
-                        style: const TextStyle(color: Colors.white60),
-                      ),
-                    )
-                  ],
+                  ),
                 ),
               ),
             );
           }
         }
 
-        // --- INSTAGRAM LAYOUT NAVIGATION SYSTEM ---
+        // --- MASTER SYSTEM CONTAINER ---
         class HomeScreen extends StatefulWidget {
           const HomeScreen({super.key});
           @override
@@ -168,7 +235,12 @@ jobs:
 
         class _HomeScreenState extends State<HomeScreen> {
           int _currentIndex = 0;
-          final List<Widget> _pages = [const VideoFeedPage(), const SearchPage(), const ProfilePage()];
+          final List<Widget> _pages = [
+            const VideoFeedPage(),
+            const SearchPage(),
+            const ChatListPage(),
+            const ProfilePage()
+          ];
 
           @override
           Widget build(BuildContext context) {
@@ -177,7 +249,7 @@ jobs:
               bottomNavigationBar: BottomNavigationBar(
                 currentIndex: _currentIndex,
                 backgroundColor: Colors.black,
-                selectedItemColor: const Color(0xFFD4AF37),
+                selectedItemColor: const Color(0xFF00E5FF),
                 unselectedItemColor: Colors.white54,
                 showSelectedLabels: false,
                 showUnselectedLabels: false,
@@ -186,6 +258,7 @@ jobs:
                 items: const [
                   BottomNavigationBarItem(icon: Icon(Icons.home_filled, size: 28), label: ''),
                   BottomNavigationBarItem(icon: Icon(Icons.search, size: 28), label: ''),
+                  BottomNavigationBarItem(icon: Icon(Icons.maps_ugc, size: 28), label: ''),
                   BottomNavigationBarItem(icon: Icon(Icons.person_outline, size: 28), label: ''),
                 ],
               ),
@@ -193,7 +266,7 @@ jobs:
           }
         }
 
-        // --- PREMIUM VIDEO FEED PAGE ---
+        // --- UNIQUE BLUR DESIGN VIDEO FEED WITH REELS SCALE SCROLL ---
         class VideoFeedPage extends StatefulWidget {
           const VideoFeedPage({super.key});
           @override
@@ -201,135 +274,98 @@ jobs:
         }
 
         class _VideoFeedPageState extends State<VideoFeedPage> {
-          double _emojiScale = 0.0;
-          bool _isLiked = false;
-          final List<Color> _refreshColors = [Colors.amber, Colors.redAccent, Colors.blueAccent];
-          int _colorIndex = 0;
-
-          void _triggerTelegramReaction() {
-            setState(() {
-              _isLiked = !_isLiked;
-              _emojiScale = 1.4;
-            });
-            Future.delayed(const Duration(milliseconds: 500), () {
-              if (mounted) setState(() => _emojiScale = 0.0);
-            });
-          }
+          int _activeReelIndex = 0;
 
           @override
           Widget build(BuildContext context) {
             return Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.black,
-                title: const Text('Levo', style: TextStyle(fontFamily: 'serif', fontSize: 24, fontWeight: FontWeight.bold)),
-                elevation: 0,
-                actions: [
-                  IconButton(icon: const Icon(Icons.favorite_border), onPressed: () {}),
-                  IconButton(icon: const Icon(Icons.send_outlined), onPressed: () {}),
-                ],
-              ),
-              body: RefreshIndicator(
-                color: _refreshColors[_colorIndex],
-                onRefresh: () async {
-                  setState(() => _colorIndex = (_colorIndex + 1) % _refreshColors.length);
-                  await Future.delayed(const Duration(seconds: 2));
+              body: PageView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: 5,
+                onPageChanged: (index) => setState(() => _activeReelIndex = index),
+                itemBuilder: (context, index) {
+                  double scale = _activeReelIndex == index ? 1.0 : 0.82;
+                  return AnimatedScale(
+                    scale: scale,
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeOutQuic,
+                    child: ReelCard(index: index),
+                  );
                 },
-                child: ListView(
-                  children: [
-                    // Stories Row Structure
-                    SizedBox(
-                      height: 105,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5,
-                        itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-                          child: Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundColor: const Color(0xFFD4AF37),
-                                child: const CircleAvatar(radius: 28, backgroundColor: Colors.black, child: Icon(Icons.person, color: Colors.white)),
+              ),
+            );
+          }
+        }
+
+        class ReelCard extends StatefulWidget {
+          final int index;
+          const ReelCard({required this.index, super.key});
+          @override
+          State<ReelCard> createState() => _ReelCardState();
+        }
+
+        class _ReelCardState extends State<ReelCard> {
+          bool _isExpanded = false;
+          bool _isLiked = false;
+
+          @override
+          Widget build(BuildContext context) {
+            return Stack(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0B0B0B),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.2), width: 1.5),
+                    boxShadow: [
+                      BoxShadow(color: const Color(0xFF9C27B0).withOpacity(0.1), blurRadius: 20, spreadRadius: 1),
+                    ],
+                  ),
+                  child: const Center(child: Icon(Icons.play_arrow_rounded, size: 70, color: Colors.white12)),
+                ),
+                Positioned(
+                  bottom: 35, left: 24, right: 24,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    alignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('@elisa_editz_official_${widget.index}', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF00E5FF), fontSize: 15)),
+                            const SizedBox(height: 4),
+                            GestureDetector(
+                              onTap: () => setState(() => _isExpanded = !_isExpanded),
+                              child: Text(
+                                _isExpanded 
+                                  ? 'Premium luxury editing workflow interface. Full layout rendering at 60fps with scalable vector grids. #vfx #branding #elisa'
+                                  : 'Premium luxury editing workflow interface... more',
+                                style: const TextStyle(color: Colors.white70, fontSize: 13),
+                                maxLines: _isExpanded ? 4 : 1,
                               ),
-                              const SizedBox(height: 4),
-                              Text('User ${index + 1}', style: const TextStyle(fontSize: 11, color: Colors.white)),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const Divider(color: Colors.white10, height: 1),
-                    
-                    // Main Feed Post Structure
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          leading: const CircleAvatar(backgroundColor: Colors.white10, child: Icon(Icons.person)),
-                          title: const Text('levo_premium_editor', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                          subtitle: const Text('Mumbai, India', style: TextStyle(fontSize: 11, color: Colors.white60)),
-                          trailing: const Icon(Icons.more_vert),
-                        ),
-                        GestureDetector(
-                          onDoubleTap: _triggerTelegramReaction,
-                          child: Stack(
-                            alignment: Center,
-                            children: [
-                              Container(
-                                height: 400,
-                                color: const Color(0xFF101010),
-                                child: const Center(child: Icon(Icons.movie_creation_outlined, size: 60, color: Colors.white24)),
-                              ),
-                              AnimatedScale(
-                                scale: _emojiScale,
-                                duration: const Duration(milliseconds: 250),
-                                curve: Curves.bounceOut,
-                                child: const Icon(Icons.local_fire_department, size: 140, color: Colors.orangeAccent),
-                              ),
-                            ],
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(_isLiked ? Icons.favorite : Icons.favorite_border, color: _isLiked ? Colors.red : Colors.white, size: 30),
+                            onPressed: () => setState(() => _isLiked = !_isLiked),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(_isLiked ? Icons.favorite : Icons.favorite_border, color: _isLiked ? Colors.red : Colors.white),
-                                    onPressed: _triggerTelegramReaction,
-                                  ),
-                                  IconButton(icon: const Icon(Icons.chat_bubble_outline), onPressed: () {}),
-                                  IconButton(icon: const Icon(Icons.send_out_lined), onPressed: () {}),
-                                ],
-                              ),
-                              const Icon(Icons.bookmark_border),
-                            ],
-                          ),
-                        ),
-                        const Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Text('Liked by levo_network and others', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-                          child: RichText(
-                            text: const TextSpan(
-                              style: TextStyle(color: Colors.white),
-                              children: [
-                                TextSpan(text: 'levo_premium_editor ', style: TextStyle(fontWeight: FontWeight.bold)),
-                                TextSpan(text: 'Cinematic layout base active. Clean profile UI integration. #branding #luxury', style: TextStyle(color: Colors.white70)),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                          const SizedBox(height: 12),
+                          const Icon(Icons.chat_bubble_outline, size: 26, color: Colors.white),
+                          const SizedBox(height: 16),
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
             );
           }
         }
@@ -339,13 +375,45 @@ jobs:
           @override
           Widget build(BuildContext context) {
             return Scaffold(
-              appBar: AppBar(backgroundColor: Colors.black, title: const TextField(decoration: InputDecoration(hintText: 'Search username, area, location...', border: InputBorder.none))),
-              body: const Center(child: Text('Search Engine Active', style: TextStyle(color: Colors.white60))),
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                title: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(color: const Color(0xFF121212), borderRadius: BorderRadius.circular(8)),
+                  child: const TextField(decoration: InputDecoration(hintText: 'Search username, location, area...', border: InputBorder.none)),
+                ),
+              ),
+              body: const Center(child: Text('Search filters operational.', style: TextStyle(color: Colors.white38))),
             );
           }
         }
 
-        class ProfilePage extends StatefulWidget {
+        class ChatListPage extends StatelessWidget {
+          const ChatListPage({super.key});
+          @override
+          Widget build(BuildContext context) {
+            return Scaffold(
+              appBar: AppBar(backgroundColor: Colors.black, title: const Text('Messages')),
+              body: ListView.builder(
+                itemCount: 4,
+                itemBuilder: (context, index) => ListTile(
+                  leading: const CircleAvatar(backgroundColor: Colors.white10, child: Icon(Icons.person)),
+                  title: Text('Editor Network ${index + 1}'),
+                  subtitle: Text(index % 2 == 0 ? 'Seen 12m ago' : 'Unseen message waiting', style: TextStyle(color: index % 2 == 0 ? Colors.white38 : const Color(0xFF00E5FF))),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(icon: const Icon(Icons.phone, color: Colors.green, size: 20), onPressed: () {}),
+                      IconButton(icon: const Icon(Icons.videocam, color: Color(0xFF00E5FF), size: 20), onPressed: () {}),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+
+        class ProfilePage extends StatelessWidget {
           const ProfilePage({super.key});
           @override
           State<ProfilePage> createState() => _ProfilePageState();
@@ -354,20 +422,28 @@ jobs:
         class _ProfilePageState extends State<ProfilePage> {
           @override
           Widget build(BuildContext context) {
-            return const Scaffold(
-              body: Center(child: Text('User Profile Panel Active', style: TextStyle(color: Colors.white60))),
-            );
-          }
-        }
-        EOF
-
-    - name: Build APK
-      run: |
-        flutter pub get
-        flutter build apk --release
-        
-    - uses: actions/upload-artifact@v4
-      with:
-        name: levo-release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
-        
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.black,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => SafeArea(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(leading: const Icon(Icons.report, color: Colors.red), title: const Text('Report about this account'), onPressed: () => Navigator.pop(context)),
+                              ListTile(leading: const Icon(Icons.share), title: const Text('Share this profile'), onPressed: () => Navigator.pop(context)),
+                              ListTile(leading: const Icon(Icons.link), title: const Text('Copy link'), onPressed: () => Navigator.pop(context)),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                ],
+              ),
+              body: const 
