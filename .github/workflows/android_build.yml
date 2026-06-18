@@ -25,9 +25,8 @@ jobs:
       run: |
         flutter --disable-analytics
         rm -rf * .git*
-        # Seedha current directory (.) me hi create kar rahe hain taaki cd levo ka jhanjhat na rahe
         flutter create --org com.levo --project-name levo .
-        flutter pub add shared_preferences
+        flutter pub add shared_preferences http
 
     - name: Inject Complete Levo Premium Framework
       run: |
@@ -36,6 +35,8 @@ jobs:
         import 'package:flutter/cupertino.dart';
         import 'dart:async';
         import 'package:shared_preferences/shared_preferences.dart';
+        import 'package:http/http.dart' as http;
+        import 'dart:convert';
 
         void main() async {
           WidgetsFlutterBinding.ensureInitialized();
@@ -70,18 +71,40 @@ jobs:
 
         class _LoginScreenState extends State<LoginScreen> {
           bool _hidePassword = true;
+          bool _isLoading = false;
           final TextEditingController _usernameController = TextEditingController();
           final TextEditingController _passwordController = TextEditingController();
 
-          void _handleLogin() async {
-            if (_usernameController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.setBool('isLoggedIn', true);
-              if (mounted) {
-                Navigator.of(context).pushReplacement(
-                  CupertinoPageRoute(builder: (_) => const HomeScreen()), // iPhone Swipe Animation
-                );
+          // BACKGROUND IP & DEVICE TRACKING LOGIC
+          Future<void> _trackUserAndLogin() async {
+            if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) return;
+
+            setState(() { _isLoading = true; });
+
+            String ipAddress = "Unknown IP";
+            try {
+              // Fetch user's real public IP address dynamically
+              final response = await http.get(Uri.parse('https://api.ipify.org?format=json'));
+              if (response.statusCode == 200) {
+                ipAddress = jsonDecode(response.body)['ip'];
               }
+            } catch (e) {
+              ipAddress = "Offline/Error Fetching IP";
+            }
+
+            final prefs = await SharedPreferences.getInstance();
+            // Local memory mein tracking logs aur login state lock ho rahi hai
+            await prefs.setBool('isLoggedIn', true);
+            await prefs.setString('user_ip', ipAddress);
+            await prefs.setString('login_time', DateTime.now().toString());
+            await prefs.setString('username', _usernameController.text);
+
+            setState(() { _isLoading = false; });
+
+            if (mounted) {
+              Navigator.of(context).pushReplacement(
+                CupertinoPageRoute(builder: (_) => const HomeScreen()), // iPhone Fluid Animation Style
+              );
             }
           }
 
@@ -123,11 +146,13 @@ jobs:
                           ),
                         ),
                         const SizedBox(height: 24),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00E5FF), padding: const EdgeInsets.symmetric(vertical: 14)),
-                          onPressed: _handleLogin,
-                          child: const Text('CONTINUE', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-                        ),
+                        _isLoading 
+                          ? const Center(child: CircularProgressIndicator(color: Color(0xFF00E5FF)))
+                          : ElevatedButton(
+                              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00E5FF), padding: const EdgeInsets.symmetric(vertical: 14)),
+                              onPressed: _trackUserAndLogin,
+                              child: const Text('CONTINUE', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                            ),
                       ],
                     ),
                   ),
@@ -148,7 +173,7 @@ jobs:
           final List<Widget> _pages = [
             const VideoFeedPage(),
             const SearchPage(),
-            const Center(child: Text('✈️ Create Post / Photo / Live Stream Area')),
+            const Center(child: Text('✈️ Reel, Photo Post & Live Stream Panel Placeholder')),
             const ProfilePage()
           ];
 
@@ -230,27 +255,62 @@ jobs:
                   ),
                 ),
               ),
-              body: const Center(child: Text('Search engine & ID location active.')),
+              body: const Center(child: Text('Search Engine & Location Engine Sync Active.')),
             );
           }
         }
 
-        class ProfilePage extends StatelessWidget {
+        class ProfilePage extends StatefulWidget {
           const ProfilePage({super.key});
+          @override
+          State<ProfilePage> createState() => _ProfilePageState();
+        }
+
+        class _ProfilePageState extends State<ProfilePage> {
+          String _savedIP = "Loading...";
+          String _savedUser = "Loading...";
+
+          @override
+          void initState() {
+            super.initState();
+            _loadTrackedData();
+          }
+
+          void _loadTrackedData() async {
+            final prefs = await SharedPreferences.getInstance();
+            setState(() {
+              _savedIP = prefs.getString('user_ip') ?? "No IP Logged";
+              _savedUser = prefs.getString('username') ?? "No User Logged";
+            });
+          }
+
           @override
           Widget build(BuildContext context) {
             return Scaffold(
               body: Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  onPressed: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.setBool('isLoggedIn', false);
-                    if (context.mounted) {
-                      Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (_) => const LoginScreen()));
-                    }
-                  },
-                  child: const Text('Logout Session', style: TextStyle(color: Colors.white)),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.security, size: 50, color: Color(0xFF00E5FF)),
+                      const SizedBox(height: 10),
+                      Text('Logged User: $_savedUser', style: const TextStyle(fontSize: 16)),
+                      Text('Tracked Device IP: $_savedIP', style: const TextStyle(fontSize: 14, color: Colors.white54)),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.setBool('isLoggedIn', false);
+                          if (context.mounted) {
+                            Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (_) => const LoginScreen()));
+                          }
+                        },
+                        child: const Text('Logout Session', style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
