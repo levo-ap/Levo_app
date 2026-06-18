@@ -17,14 +17,18 @@ jobs:
       with:
         flutter-version: '3.16.0'
 
-    # Is baar hum project ka naam direct capital L se hi create kar rahe hain taaki sed ki zaroorat na pade
-    - name: Create Clean Flutter Project
+    # Telemetry bypass aur non-interactive clear setup
+    - name: Initialize App Architecture
       run: |
+        flutter --disable-analytics
         rm -rf * .git*
-        flutter create --org com.levo --project-name Levo .
+        flutter create --org com.levo --project-name levo_app_clean tmp_project
+        mv tmp_project/* .
+        mv tmp_project/.metadata . 2>/dev/null || true
+        rm -rf tmp_project
 
-    # A to Z Premium Social Features Integration
-    - name: Overwrite Code with Advanced MultiScreen Architecture
+    # Overwrite complete clean social media code structure
+    - name: Inject Advanced MultiScreen Architecture
       run: |
         cat << 'EOF' > lib/main.dart
         import 'package:flutter/material.dart';
@@ -448,6 +452,11 @@ jobs:
       run: |
         mkdir -p assets
         sed -i '/flutter:/a \  assets:\n    - assets/logo.png' pubspec.yaml
+
+    # App label fix direct over android configurations
+    - name: Set App Name to Levo
+      run: |
+        sed -i 's/android:label=".*"/android:label="Levo"/g' android/app/src/main/AndroidManifest.xml 2>/dev/null || true
 
     - name: Build APK
       run: |
