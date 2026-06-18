@@ -21,33 +21,32 @@ jobs:
       with:
         flutter-version: '3.16.0'
 
-    - name: Initialize Clean App Structure
+    - name: Setup App Directory
       run: |
         flutter --disable-analytics
         rm -rf * .git*
         flutter create --org com.levo --project-name levo .
 
-    - name: Inject Complete Luxury Social Layout
+    - name: Create Main Dart Code
       run: |
-        cat << 'EOF' > lib/main.dart
+        num_runs=${{ github.run_number }}
+        echo "Injecting clean structural code into lib/main.dart"
+        
+        cat > lib/main.dart << 'MAIN_DART'
         import 'package:flutter/material.dart';
         import 'dart:async';
 
-        void main() {
-          runApp(const LevoApp());
-        }
+        void main() => runApp(const LevoApp());
 
         class LevoApp extends StatelessWidget {
           const LevoApp({super.key});
-
           @override
           Widget build(BuildContext context) {
             return MaterialApp(
               title: 'Levo',
               debugShowCheckedModeBanner: false,
               theme: ThemeData.dark().copyWith(
-                scaffoldBackgroundColor: const Color(0xFF000000),
-                colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF00E5FF), brightness: Brightness.dark),
+                scaffoldBackgroundColor: Colors.black,
               ),
               home: const LuxurySplashScreen(),
             );
@@ -61,44 +60,32 @@ jobs:
         }
 
         class _LuxurySplashScreenState extends State<LuxurySplashScreen> {
-          double _opacity = 1.0;
-
           @override
           void initState() {
             super.initState();
-            Timer(const Duration(milliseconds: 1200), () {
-              if (mounted) setState(() => _opacity = 0.0);
-            });
-            Timer(const Duration(milliseconds: 1600), () {
-              if (mounted) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => const AuthScreen()),
-                );
-              }
+            Timer(const Duration(milliseconds: 1500), () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const AuthScreen()),
+              );
             });
           }
-
           @override
           Widget build(BuildContext context) {
             return Scaffold(
-              body: AnimatedOpacity(
-                opacity: _opacity,
-                duration: const Duration(milliseconds: 400),
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFF00E5FF), width: 2),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(color: const Color(0xFF00E5FF).withOpacity(0.4), blurRadius: 20, spreadRadius: 2),
-                        BoxShadow(color: const Color(0xFF9C27B0).withOpacity(0.3), blurRadius: 40, spreadRadius: 4),
-                      ],
-                    ),
-                    child: const Text(
-                      'ELISA EDITZ',
-                      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 4),
-                    ),
+              body: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFF00E5FF), width: 2),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(color: const Color(0xFF00E5FF).withOpacity(0.4), blurRadius: 20),
+                      BoxShadow(color: const Color(0xFF9C27B0).withOpacity(0.3), blurRadius: 40),
+                    ],
+                  ),
+                  child: const Text(
+                    'ELISA EDITZ',
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 4),
                   ),
                 ),
               ),
@@ -113,110 +100,42 @@ jobs:
         }
 
         class _AuthScreenState extends State<AuthScreen> {
-          bool isLogin = true;
-
           @override
           Widget build(BuildContext context) {
             return Scaffold(
               body: Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                  padding: const EdgeInsets.all(24.0),
                   child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: const Color(0xFF080808),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.3), width: 1.5),
-                      boxShadow: [
-                        BoxShadow(color: const Color(0xFF9C27B0).withOpacity(0.15), blurRadius: 30, spreadRadius: 2),
-                      ],
+                      border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.3)),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          isLogin ? 'WELCOME BACK' : 'CREATE ACCOUNT',
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 2),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 30),
-                        TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Username or Email',
-                            filled: true,
-                            fillColor: const Color(0xFF101010),
-                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF00E5FF), width: 1.5)),
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        TextField(
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            filled: true,
-                            fillColor: const Color(0xFF101010),
-                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFF9C27B0), width: 1.5)),
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white10)),
-                          ),
-                        ),
+                        const Text('WELCOME BACK', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 2), textAlign: TextAlign.center),
                         const SizedBox(height: 24),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(color: const Color(0xFF00E5FF).withOpacity(0.3), blurRadius: 12, spreadRadius: 1)
-                            ],
-                          ),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF00E5FF),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            ),
-                            onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen())),
-                            child: const Text('CONTINUE', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                          ),
-                        ),
+                        const TextField(decoration: InputDecoration(labelText: 'Username', filled: true, fillColor: Color(0xFF101010))),
+                        const SizedBox(height: 12),
+                        const TextField(obscureText: true, decoration: InputDecoration(labelText: 'Password', filled: true, fillColor: Color(0xFF101010))),
                         const SizedBox(height: 24),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00E5FF)),
+                          onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const MainFeed())),
+                          child: const Text('CONTINUE', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                        ),
+                        const SizedBox(height: 16),
                         Row(
                           children: [
-                            Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
-                            const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Text('OR CONNECT WITH', style: TextStyle(fontSize: 11, color: Colors.white38, letterSpacing: 1))),
-                            Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                style: OutlinedButton.styleFrom(side: const BorderSide(color: Color(0xFF3B5998)), padding: const EdgeInsets.symmetric(vertical: 12)),
-                                icon: const Icon(Icons.facebook, color: Color(0xFF3B5998)),
-                                label: const Text('Facebook', style: TextStyle(fontSize: 13)),
-                                onPressed: () {},
-                              ),
-                            ),
+                            Expanded(child: OutlinedButton(onPressed: () {}, child: const Text('Facebook'))),
                             const SizedBox(width: 12),
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.redAccent), padding: const EdgeInsets.symmetric(vertical: 12)),
-                                icon: const Icon(Icons.g_mobiledata, color: Colors.redAccent, size: 28),
-                                label: const Text('Gmail', style: TextStyle(fontSize: 13)),
-                                onPressed: () {},
-                              ),
-                            ),
+                            Expanded(child: OutlinedButton(onPressed: () {}, child: const Text('Gmail'))),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                        TextButton(
-                          onPressed: () => setState(() => isLogin = !isLogin),
-                          child: Text(
-                            isLogin ? "Don't have an account? Sign up." : "Already have an account? Log in.",
-                            style: const TextStyle(color: Colors.white54, fontSize: 13),
-                          ),
-                        )
                       ],
                     ),
                   ),
@@ -226,236 +145,65 @@ jobs:
           }
         }
 
-        class HomeScreen extends StatefulWidget {
-          const HomeScreen({super.key});
+        class MainFeed extends StatefulWidget {
+          const MainFeed({super.key});
           @override
-          State<HomeScreen> createState() => _HomeScreenState();
+          State<MainFeed> createState() => _MainFeedState();
         }
 
-        class _HomeScreenState extends State<HomeScreen> {
-          int _currentIndex = 0;
-          final List<Widget> _pages = [
-            const VideoFeedPage(),
-            const SearchPage(),
-            const ChatListPage(),
-            const ProfilePage()
-          ];
-
-          @override
-          Widget build(BuildContext context) {
-            return Scaffold(
-              body: _pages[_currentIndex],
-              bottomNavigationBar: BottomNavigationBar(
-                currentIndex: _currentIndex,
-                backgroundColor: Colors.black,
-                selectedItemColor: const Color(0xFF00E5FF),
-                unselectedItemColor: Colors.white54,
-                showSelectedLabels: false,
-                showUnselectedLabels: false,
-                type: BottomNavigationBarType.fixed,
-                onTap: (index) => setState(() => _currentIndex = index),
-                items: const [
-                  BottomNavigationBarItem(icon: Icon(Icons.home_filled, size: 28), label: ''),
-                  BottomNavigationBarItem(icon: Icon(Icons.search, size: 28), label: ''),
-                  BottomNavigationBarItem(icon: Icon(Icons.maps_ugc, size: 28), label: ''),
-                  BottomNavigationBarItem(icon: Icon(Icons.person_outline, size: 28), label: ''),
-                ],
-              ),
-            );
-          }
-        }
-
-        class VideoFeedPage extends StatefulWidget {
-          const VideoFeedPage({super.key});
-          @override
-          State<VideoFeedPage> createState() => _VideoFeedPageState();
-        }
-
-        class _VideoFeedPageState extends State<VideoFeedPage> {
-          int _activeReelIndex = 0;
-
+        class _MainFeedState extends State<MainFeed> {
+          int _index = 0;
           @override
           Widget build(BuildContext context) {
             return Scaffold(
               body: PageView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: 5,
-                onPageChanged: (index) => setState(() => _activeReelIndex = index),
-                itemBuilder: (context, index) {
-                  double scale = _activeReelIndex == index ? 1.0 : 0.82;
+                onPageChanged: (v) => setState(() => _index = v),
+                itemBuilder: (context, i) {
                   return AnimatedScale(
-                    scale: scale,
-                    duration: const Duration(milliseconds: 350),
-                    curve: Curves.easeOutCubic,
-                    child: ReelCard(index: index),
+                    scale: _index == i ? 1.0 : 0.85,
+                    duration: const Duration(milliseconds: 300),
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0B0B0B),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.2)),
+                      ),
+                      child: Center(child: Text('@elisa_editz_official_$i', style: const TextStyle(color: Color(0xFF00E5FF)))),
+                    ),
                   );
                 },
               ),
-            );
-          }
-        }
-
-        class ReelCard extends StatefulWidget {
-          final int index;
-          const ReelCard({required this.index, super.key});
-          @override
-          State<ReelCard> createState() => _ReelCardState();
-        }
-
-        class _ReelCardState extends State<ReelCard> {
-          bool _isExpanded = false;
-          bool _isLiked = false;
-
-          @override
-          Widget build(BuildContext context) {
-            return Stack(
-              children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0B0B0B),
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.2), width: 1.5),
-                    boxShadow: [
-                      BoxShadow(color: const Color(0xFF9C27B0).withOpacity(0.1), blurRadius: 20, spreadRadius: 1),
-                    ],
-                  ),
-                  child: const Center(child: Icon(Icons.play_arrow_rounded, size: 70, color: Colors.white12)),
-                ),
-                Positioned(
-                  bottom: 35, left: 24, right: 24,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    alignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('@elisa_editz_official_${widget.index}', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF00E5FF), fontSize: 15)),
-                            const SizedBox(height: 4),
-                            GestureDetector(
-                              onTap: () => setState(() => _isExpanded = !_isExpanded),
-                              child: Text(
-                                _isExpanded 
-                                  ? 'Premium luxury editing workflow interface. Full layout rendering at 60fps with scalable vector grids. #vfx #branding #elisa'
-                                  : 'Premium luxury editing workflow interface... more',
-                                style: const TextStyle(color: Colors.white70, fontSize: 13),
-                                maxLines: _isExpanded ? 4 : 1,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(_isLiked ? Icons.favorite : Icons.favorite_border, color: _isLiked ? Colors.red : Colors.white, size: 30),
-                            onPressed: () => setState(() => _isLiked = !_isLiked),
-                          ),
-                          const SizedBox(height: 12),
-                          const Icon(Icons.chat_bubble_outline, size: 26, color: Colors.white),
-                          const SizedBox(height: 16),
-                        ],
-                      )
-                    ],
-                  ),
-                )
-              ],
-            );
-          }
-        }
-
-        class SearchPage extends StatelessWidget {
-          const SearchPage({super.key});
-          @override
-          Widget build(BuildContext context) {
-            return Scaffold(
-              appBar: AppBar(
+              bottomNavigationBar: BottomNavigationBar(
                 backgroundColor: Colors.black,
-                title: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(color: const Color(0xFF121212), borderRadius: BorderRadius.circular(8)),
-                  child: const TextField(decoration: InputDecoration(hintText: 'Search username, location, area...', border: InputBorder.none)),
-                ),
-              ),
-              body: const Center(child: Text('Search filters operational.', style: TextStyle(color: Colors.white38))),
-            );
-          }
-        }
-
-        class ChatListPage extends StatelessWidget {
-          const ChatListPage({super.key});
-          @override
-          Widget build(BuildContext context) {
-            return Scaffold(
-              appBar: AppBar(backgroundColor: Colors.black, title: const Text('Messages')),
-              body: ListView.builder(
-                itemCount: 4,
-                itemBuilder: (context, index) => ListTile(
-                  leading: const CircleAvatar(backgroundColor: Colors.white10, child: Icon(Icons.person)),
-                  title: Text('Editor Network ${index + 1}'),
-                  subtitle: Text(index % 2 == 0 ? 'Seen 12m ago' : 'Unseen message waiting', style: TextStyle(color: index % 2 == 0 ? Colors.white38 : const Color(0xFF00E5FF))),
-                  trailing: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.phone, color: Colors.green, size: 20),
-                      SizedBox(width: 14),
-                      Icon(Icons.videocam, color: Color(0xFF00E5FF), size: 20),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
-        }
-
-        class ProfilePage extends StatelessWidget {
-          const ProfilePage({super.key});
-          @override
-          Widget build(BuildContext context) {
-            return Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.black,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.more_vert),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) => SafeArea(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ListTile(leading: const Icon(Icons.report, color: Colors.red), title: const Text('Report about this account'), onPressed: () => Navigator.pop(context)),
-                              ListTile(leading: const Icon(Icons.share), title: const Text('Share this profile'), onPressed: () => Navigator.pop(context)),
-                              ListTile(leading: const Icon(Icons.link), title: const Text('Copy link'), onPressed: () => Navigator.pop(context)),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  )
+                selectedItemColor: const Color(0xFF00E5FF),
+                unselectedItemColor: Colors.white54,
+                type: BottomNavigationBarType.fixed,
+                items: const [
+                  BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: ''),
+                  BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
+                  BottomNavigationBarItem(icon: Icon(Icons.maps_ugc), label: ''),
+                  BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: ''),
                 ],
               ),
-              body: const Center(child: Text('Profile overview active.', style: TextStyle(color: Colors.white38))),
             );
           }
         }
-        EOF
+        MAIN_DART
 
-    - name: Build APK
+    - name: Build APK File
       run: |
         flutter pub get
         flutter build apk --release
 
-    - name: Create Release and Upload APK
+    - name: Deploy to Releases Page
       uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ github.run_number }}
         name: Levo Premium App Release v${{ github.run_number }}
         files: build/app/outputs/flutter-apk/app-release.apk
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_T
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
